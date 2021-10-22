@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import App from './App';
+import Routes from './Routes';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from './styles/global-style';
@@ -8,7 +8,7 @@ import theme from './styles/theme';
 ReactDOM.render(
   <ThemeProvider theme={theme}>
     <GlobalStyle />
-    <App />
+    <Routes />
   </ThemeProvider>,
   document.getElementById('root')
 );
