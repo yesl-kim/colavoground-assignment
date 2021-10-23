@@ -4,22 +4,28 @@ import { IoIosArrowDown } from 'react-icons/io';
 
 import { Span } from '../../atoms';
 
-export function CartDiscountItem() {
+interface CartDiscountItemProps {
+  discount: Discount;
+}
+
+export function CartDiscountItem({ discount }: CartDiscountItemProps) {
+  const { name, rate } = discount;
+
   return (
     <Container>
       <LabelWrapper>
         <Span color="gray" size={14}>
-          시즌 할인
+          {name}
         </Span>
         <Span color="lightGray" size={13}>
           여성컷, 스타일링, 디지털펌, 전체염색
         </Span>
         <Span color="point" size={14} bold>
-          -20,000원 (10%)
+          {`-원 (${Math.round(rate * 100)}%)`}
         </Span>
       </LabelWrapper>
       <TooltipButton>
-        <span>3</span>
+        <span>수정</span>
         <IoIosArrowDown />
       </TooltipButton>
     </Container>

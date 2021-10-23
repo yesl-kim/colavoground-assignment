@@ -8,3 +8,11 @@ type Item = {
 };
 
 type Items = Item[] | [];
+
+type Discount = {
+  id: string;
+  name: string;
+  rate: number;
+};
+
+type Discounts = Discount[] | [];

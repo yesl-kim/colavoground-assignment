@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface CartTemplateProps {
+interface ModalTemplateProps {
   header: React.ReactNode;
   main: React.ReactNode;
   footer: React.ReactNode;
 }
 
-export function CartTemplate({ header, main, footer }: CartTemplateProps) {
+export function ModalTemplate({ header, main, footer }: ModalTemplateProps) {
   return (
     <Container>
       <Header>{header}</Header>

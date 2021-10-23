@@ -1,1 +1,1 @@
-export { CartTemplate } from './CartTemplate';
+export { ModalTemplate } from './ModalTemplate';

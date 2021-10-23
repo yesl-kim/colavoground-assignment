@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { HiPlusCircle } from 'react-icons/hi';
 
-import { toggleMenuModal } from '../store/modals';
+import { toggleMenuModal, toggleDiscountModal } from '../store/modals';
 import { CartMenuItem, CartDiscountItem, ModalTitle } from '../components/molecules';
-import { MenuModal } from '../components/organisms';
+import { MenuModal, DiscountModal } from '../components/organisms';
 
 export function Cart() {
   const dispatch = useDispatch();
   const onToggleMenuModal = () => dispatch(toggleMenuModal());
+  const onToggleDiscountModal = () => dispatch(toggleDiscountModal());
 
   return (
     <>
@@ -23,13 +24,12 @@ export function Cart() {
             <GrayButton onClick={onToggleMenuModal}>
               <HiPlusCircle color="#999" size="15" /> <span>시술</span>
             </GrayButton>
-            <GrayButton>
+            <GrayButton onClick={onToggleDiscountModal}>
               <HiPlusCircle color="#999" size="15" /> <span>할인</span>
             </GrayButton>
           </ButtonWrapper>
           <ul style={{ padding: '5px 0' }}>
             <CartMenuItem />
-            <CartDiscountItem />
           </ul>
         </Section>
 
@@ -42,6 +42,7 @@ export function Cart() {
         </Footer>
       </Container>
       <MenuModal />
+      <DiscountModal />
     </>
   );
 }
