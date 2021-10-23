@@ -1,29 +1,26 @@
-import React, { useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React from 'react';
 import styled from 'styled-components';
-import { IoIosArrowDown } from 'react-icons/io';
+import { useDispatch } from 'react-redux';
 import { HiPlusCircle } from 'react-icons/hi';
 
-import { CartMenuItem, CartDiscountItem, Modal } from '../components/molecules';
+import { toggleMenuModal } from '../store/modals';
+import { CartMenuItem, CartDiscountItem, ModalTitle } from '../components/molecules';
+import { MenuModal } from '../components/organisms';
 
-export function Cart({ history }: RouteComponentProps) {
-  const [menuModal, setMenuModal] = useState(false);
-
-  const toMenu = () => history.push('/menu');
+export function Cart() {
+  const dispatch = useDispatch();
+  const onToggleMenuModal = () => dispatch(toggleMenuModal());
 
   return (
     <>
       <Container>
         <Header>
-          <TitleWrapper>
-            <span>고객님</span>
-            <Detail>결제 목록</Detail>
-          </TitleWrapper>
+          <ModalTitle title="고객님 이름" subTitle="결제 목록" />
         </Header>
 
         <Section>
           <ButtonWrapper>
-            <GrayButton onClick={() => setMenuModal(true)}>
+            <GrayButton onClick={onToggleMenuModal}>
               <HiPlusCircle color="#999" size="15" /> <span>시술</span>
             </GrayButton>
             <GrayButton>
@@ -44,16 +41,7 @@ export function Cart({ history }: RouteComponentProps) {
           <NextButton>다음</NextButton>
         </Footer>
       </Container>
-      <Modal
-        title="시술 메뉴"
-        content={<div>menu</div>}
-        visible={menuModal}
-        bottom={
-          <button type="button" onClick={() => setMenuModal(false)}>
-            닫기
-          </button>
-        }
-      />
+      <MenuModal />
     </>
   );
 }
@@ -98,13 +86,6 @@ const GrayButton = styled.button`
   }
 `;
 
-const TitleWrapper = styled.p`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
 const Detail = styled.span`
   font-size: 13px;
   color: #999;
@@ -112,7 +93,7 @@ const Detail = styled.span`
 
 const Footer = styled.footer`
   margin-top: auto;
-  padding: 0 20px 30px;
+  padding: 15px 20px 30px;
   border-top: 1px solid #eee;
 `;
 
@@ -120,7 +101,7 @@ const ValueWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 15px 0;
+  margin-bottom: 15px;
 `;
 
 const Value = styled.span`

@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { BsCheckSquareFill, BsSquare } from 'react-icons/bs';
 import { IoIosArrowDown } from 'react-icons/io';
 
 import { Span, Checkbox } from '../../atoms';
 
-export function MenuItem() {
+interface MenuItemProps {
+  item: Item;
+}
+
+export function MenuItem({ item }: MenuItemProps) {
+  const { name, count, price } = item;
+  const localPrice = price.toLocaleString();
+
   const [checked, setChecked] = useState(false);
   const onClick = () => {
     setChecked(!checked);
@@ -17,14 +23,14 @@ export function MenuItem() {
         <Checkbox checked={checked} />
         <Label>
           <Span color="black" size={15}>
-            남성컷
+            {name}
           </Span>
-          <Price>15,000원, 1시간</Price>
+          <Price>{`${localPrice}원, 1시간`}</Price>
         </Label>
       </CheckboxWrapper>
       {checked && (
         <TooltipButton>
-          <span>1</span>
+          <span>{count}</span>
           <IoIosArrowDown />
         </TooltipButton>
       )}
@@ -71,12 +77,6 @@ const Price = styled.span`
     background-color: #69dadb;
     content: '';
   }
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-left: auto;
 `;
 
 const TooltipButton = styled.button`

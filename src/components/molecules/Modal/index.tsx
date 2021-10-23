@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { keyframes, css } from 'styled-components';
+import { IoClose } from 'react-icons/io5';
 
 interface ModalProps {
-  title?: string;
-  content: React.ReactNode;
-  bottom?: React.ReactNode;
   visible: boolean;
+  children: React.ReactNode;
+  onClose: () => void;
 }
 
 const el: Element = document.querySelector('#modal')!;
 
-export function Modal({ title, content, bottom, visible }: ModalProps) {
+export function Modal({ visible, children, onClose }: ModalProps) {
   const [animate, setAnimate] = useState(false);
   const [localVisible, setLocalVisible] = useState(visible);
 
@@ -28,9 +28,10 @@ export function Modal({ title, content, bottom, visible }: ModalProps) {
   return createPortal(
     <Dimmer disappear={!visible}>
       <Container disappear={!visible}>
-        <Top>{title}</Top>
-        <Content>{content}</Content>
-        <Bottom>{bottom}</Bottom>
+        <CloseButton onClick={onClose}>
+          <IoClose color="#666" size={25} />
+        </CloseButton>
+        {children}
       </Container>
     </Dimmer>,
     el,
@@ -97,13 +98,14 @@ const Dimmer = styled.div<{ disappear: boolean }>`
 `;
 
 const Container = styled.section<{ disappear: boolean }>`
+  position: relative;
   display: flex;
   flex-direction: column;
+  align-self: end;
   width: 100%;
   height: calc(100vh - 30px);
-  align-self: end;
-  background: white;
   border-radius: 10px 10px 0 0;
+  background: white;
 
   animation-duration: 0.25s;
   animation-timing-function: ease-out;
@@ -124,7 +126,7 @@ const Top = styled.header`
 
 const Content = styled.div`
   flex: 1;
-  padding: 0 20px 30px;
+  padding: 0 15px 30px;
   overflow: scroll;
 `;
 
@@ -132,4 +134,10 @@ const Bottom = styled.div`
   margin-top: auto;
   padding: 0 20px 30px;
   border-top: 1px solid #eee;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  left: 12px;
+  top: 12px;
 `;

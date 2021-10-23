@@ -1,41 +1,41 @@
 import React from 'react';
-import styled from "styled-components"
+import styled from 'styled-components';
 
 interface CartTemplateProps {
   header: React.ReactNode;
   main: React.ReactNode;
-  footer: React.ReactNode
+  footer: React.ReactNode;
 }
 
-export function CartTemplate({header, main, footer}: CartTemplateProps) {
+export function CartTemplate({ header, main, footer }: CartTemplateProps) {
   return (
     <Container>
       <Header>{header}</Header>
       <Section>{main}</Section>
       <Footer>{footer}</Footer>
     </Container>
-  )
+  );
 }
 
-const Container = styled.div`
+const Container = styled.section`
   display: flex;
   flex-direction: column;
   height: 100vh;
   background-color: #fff;
   overflow: hidden;
-`
+`;
 const Header = styled.header`
   padding: 10px 20px 20px;
-`
+`;
 
-const Section = styled.section`
+const Section = styled.div`
   flex: 1;
   padding: 0 20px 30px;
   overflow: scroll;
-`
+`;
 
 const Footer = styled.footer`
   margin-top: auto;
   padding: 0 20px 30px;
   border-top: 1px solid #eee;
-`
+`;
