@@ -1,78 +1,92 @@
-import styled from "styled-components"
-import { IoIosArrowDown } from "react-icons/io";
+import React, { useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
+import styled from 'styled-components';
+import { IoIosArrowDown } from 'react-icons/io';
 import { HiPlusCircle } from 'react-icons/hi';
 
-const testArr = new Array(10).fill('')
+import { CartMenuItem, CartDiscountItem, Modal } from '../components/molecules';
 
-export function Cart() {
+export function Cart({ history }: RouteComponentProps) {
+  const [menuModal, setMenuModal] = useState(false);
+
+  const toMenu = () => history.push('/menu');
+
   return (
-    <Container>
-      <Header>
-        <TitleWrapper>
-          <span>고객님</span>
-          <Detail>결제 목록</Detail>
-        </TitleWrapper>
-      </Header>
+    <>
+      <Container>
+        <Header>
+          <TitleWrapper>
+            <span>고객님</span>
+            <Detail>결제 목록</Detail>
+          </TitleWrapper>
+        </Header>
 
-      <Section>
-        <ButtonWrapper>
-          <GrayButton><HiPlusCircle color='#999' size='15' /> <span>시술</span></GrayButton>
-          <GrayButton><HiPlusCircle color='#999' size='15' /> <span>할인</span></GrayButton>
-        </ButtonWrapper>
-        <ul style={{padding: '5px 0'}}>
-          {testArr.map(e => <Item>
-            <LabelWrapper>
-              <Label>스타일링</Label>
-              <ValueLabel>60,000원</ValueLabel>
-            </LabelWrapper>
-            <TooltipButton> <span>3</span><IoIosArrowDown /></TooltipButton>
-          </Item>)}
-        </ul>
-      </Section>
+        <Section>
+          <ButtonWrapper>
+            <GrayButton onClick={() => setMenuModal(true)}>
+              <HiPlusCircle color="#999" size="15" /> <span>시술</span>
+            </GrayButton>
+            <GrayButton>
+              <HiPlusCircle color="#999" size="15" /> <span>할인</span>
+            </GrayButton>
+          </ButtonWrapper>
+          <ul style={{ padding: '5px 0' }}>
+            <CartMenuItem />
+            <CartDiscountItem />
+          </ul>
+        </Section>
 
-    <Footer>
-      <ValueWrapper>
-        <Detail>합계</Detail>
-        <Value>169,000원</Value>
-      </ValueWrapper>
-      <NextButton>다음</NextButton>
-    </Footer>
-  </Container>
-  )
+        <Footer>
+          <ValueWrapper>
+            <Detail>합계</Detail>
+            <Value>169,000원</Value>
+          </ValueWrapper>
+          <NextButton>다음</NextButton>
+        </Footer>
+      </Container>
+      <Modal
+        title="시술 메뉴"
+        content={<div>menu</div>}
+        visible={menuModal}
+        bottom={
+          <button type="button" onClick={() => setMenuModal(false)}>
+            닫기
+          </button>
+        }
+      />
+    </>
+  );
 }
 
 const Container = styled.div`
-  padding: 50px 20px calc(130px + 30px);
-
-`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+`;
 const Header = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  padding: 10px 20px 0;
-  background-color: #fff;
-  z-index: 999;
-`
+  padding: 10px 20px 20px;
+`;
 
 const Section = styled.section`
-  /* padding: 50px 0; */
-`
+  flex: 1;
+  padding: 0 20px 30px;
+  overflow: scroll;
+`;
 
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px dashed #eee;
-`
+`;
 
 const GrayButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 49%;
   padding: 15px 0;
+  width: 49%;
   border-radius: 12px;
   background-color: #eee;
 
@@ -82,44 +96,38 @@ const GrayButton = styled.button`
     line-height: 1.5;
     color: #666;
   }
-`
+`;
 
-const TitleWrapper = styled.div`
+const TitleWrapper = styled.p`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const Detail = styled.span`
   font-size: 13px;
   color: #999;
-`
+`;
 
 const Footer = styled.footer`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 130px;
-  padding: 0 20px;
+  margin-top: auto;
+  padding: 0 20px 30px;
   border-top: 1px solid #eee;
-  background-color: #fff;
-  z-index: 999;
-`
+`;
 
 const ValueWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 15px 0;
-`
+`;
 
 const Value = styled.span`
   font-size: 24px;
   font-weight: bold;
   color: #000;
-`
+`;
 
 const NextButton = styled(GrayButton)`
   width: 100%;
@@ -127,45 +135,4 @@ const NextButton = styled(GrayButton)`
   font-size: 15px;
   color: white;
   text-align: center;
-`
-
-const Item = styled.li`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-`
-
-const LabelWrapper = styled.p`
-  display: flex;
-  flex-direction: column;
-`
-
-const Label = styled.span`
-  font-size: 15px;
-  line-height: 1.5;
-  color: #666;
-`
-
-const ValueLabel = styled.span`
-  font-size: 16px;
-  line-height: 1.5;
-  font-weight: bold;
-  color: #000;
-`
-
-const TooltipButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  border-radius: 15px;
-  background-color: #f5f5f5;
-  text-align: center;
-  color: #999;
-
-  span {
-    margin: 0 3px;
-    line-height: 1.5;
-  }
-`
+`;
