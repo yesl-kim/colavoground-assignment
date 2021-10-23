@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom';
 import styled, { keyframes, css } from 'styled-components';
 
 interface ModalProps {
-  title: string;
+  title?: string;
   content: React.ReactNode;
-  bottom: React.ReactNode;
+  bottom?: React.ReactNode;
   visible: boolean;
 }
 
