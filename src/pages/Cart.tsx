@@ -1,13 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { HiPlusCircle } from 'react-icons/hi';
 
 import { toggleMenuModal, toggleDiscountModal } from '../store/modals';
+import { RootState } from '../store';
 import { CartMenuItem, CartDiscountItem, ModalTitle } from '../components/molecules';
 import { MenuModal, DiscountModal } from '../components/organisms';
 
 export function Cart() {
+  const selectedItems = useSelector((state: RootState) => state.items);
+
   const dispatch = useDispatch();
   const onToggleMenuModal = () => dispatch(toggleMenuModal());
   const onToggleDiscountModal = () => dispatch(toggleDiscountModal());
@@ -29,7 +32,9 @@ export function Cart() {
             </GrayButton>
           </ButtonWrapper>
           <ul style={{ padding: '5px 0' }}>
-            <CartMenuItem />
+            {selectedItems.map((item) => (
+              <CartMenuItem item={item} />
+            ))}
           </ul>
         </Section>
 

@@ -4,19 +4,27 @@ import { IoIosArrowDown } from 'react-icons/io';
 
 import { Span } from '../../atoms';
 
-export function CartMenuItem() {
+interface CartMenuItemProps {
+  item: Item;
+}
+
+export function CartMenuItem({ item }: CartMenuItemProps) {
+  const { name, count, price } = item;
+  const totalPrice = price * count;
+  const localPrice = totalPrice.toLocaleString();
+
   return (
     <Container>
       <LabelWrapper>
         <Span color="gray" size={14}>
-          스타일링
+          {name}
         </Span>
         <Span color="black" size={14} bold>
-          60,000원
+          {`${localPrice}원`}
         </Span>
       </LabelWrapper>
       <TooltipButton>
-        <span>3</span>
+        <span>{count}</span>
         <IoIosArrowDown />
       </TooltipButton>
     </Container>
