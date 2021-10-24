@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { HiPlusCircle } from 'react-icons/hi';
 
 import { toggleMenuModal, toggleDiscountModal } from '../store/modals';
+import { modifyItemCount, removeItem } from '../store/items';
 import { RootState } from '../store';
 import { CartMenuItem, CartDiscountItem, ModalTitle } from '../components/molecules';
 import { MenuModal, DiscountModal } from '../components/organisms';
@@ -14,6 +15,10 @@ export function Cart() {
   const dispatch = useDispatch();
   const onToggleMenuModal = () => dispatch(toggleMenuModal());
   const onToggleDiscountModal = () => dispatch(toggleDiscountModal());
+
+  const onModifyItemCount = (id: string, count: number) => dispatch(modifyItemCount({ id, count }));
+
+  const onRemoveItem = (id: string) => dispatch(removeItem(id));
 
   return (
     <>
@@ -33,7 +38,7 @@ export function Cart() {
           </ButtonWrapper>
           <ul style={{ padding: '5px 0' }}>
             {selectedItems.map((item) => (
-              <CartMenuItem item={item} />
+              <CartMenuItem key={item.id} item={item} modifyCount={onModifyItemCount} remove={onRemoveItem} />
             ))}
           </ul>
         </Section>

@@ -7,8 +7,6 @@ type Item = {
   price: number;
 };
 
-type Items = Item[] | [];
-
 type Discount = {
   id: string;
   name: string;

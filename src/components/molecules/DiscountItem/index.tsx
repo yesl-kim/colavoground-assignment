@@ -17,7 +17,7 @@ export function DiscountItem({ discount }: DiscountItemProps) {
 
   return (
     <Container onClick={onClick}>
-      <Checkbox checked={checked} />
+      <Checkbox checked={checked} onChange={onClick} />
       <Label>
         <Span color="black" size={15}>
           {name}

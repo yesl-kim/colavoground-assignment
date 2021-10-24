@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
 
 interface SpanProps {
-  color: 'black' | 'gray' | 'lightGray' | 'point';
+  color: 'black' | 'gray' | 'lightGray' | 'point' | string;
   size: number;
-  children: string;
+  children: string | number;
   bold?: boolean;
 }
 

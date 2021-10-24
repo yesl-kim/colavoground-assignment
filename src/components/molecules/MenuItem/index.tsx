@@ -3,24 +3,42 @@ import styled from 'styled-components';
 import { IoIosArrowDown } from 'react-icons/io';
 
 import { Span, Checkbox } from '../../atoms';
+import { Tooltip, Counter } from '../index';
 
 interface MenuItemProps {
   item: Item;
+  selected: boolean;
+  select: (item: Item) => void;
+  remove: (id: string) => void;
+  modify: (id: string, count: number) => void;
 }
 
-export function MenuItem({ item }: MenuItemProps) {
-  const { name, count, price } = item;
+function MenuItem({ item, selected, select, remove, modify }: MenuItemProps) {
+  const { name, count, price, id } = item;
   const localPrice = price.toLocaleString();
 
-  const [checked, setChecked] = useState(false);
-  const onClick = () => {
-    setChecked(!checked);
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = () => {
+    if (selected) remove(id);
+    else select(item);
   };
+
+  const [localCount, setLocalCount] = useState(count);
+  const onIncrease = () => {
+    if (localCount >= 100) return;
+    setLocalCount((prev) => prev + 1);
+  };
+  const onDecrease = () => {
+    if (localCount <= 1) return;
+    setLocalCount((prev) => prev - 1);
+  };
+
+  const confirmCallback = () => {};
+  const cancelCallback = () => {};
 
   return (
     <Container>
-      <CheckboxWrapper onClick={onClick}>
-        <Checkbox checked={checked} />
+      <CheckboxWrapper>
+        <Checkbox checked={selected} onChange={onChange} />
         <Label>
           <Span color="black" size={15}>
             {name}
@@ -28,15 +46,16 @@ export function MenuItem({ item }: MenuItemProps) {
           <Price>{`${localPrice}원, 1시간`}</Price>
         </Label>
       </CheckboxWrapper>
-      {checked && (
-        <TooltipButton>
-          <span>{count}</span>
-          <IoIosArrowDown />
-        </TooltipButton>
+      {selected && (
+        <Tooltip title="총수" buttonLabel={count} confirmCallback={confirmCallback} cancelCallback={cancelCallback}>
+          <Counter count={localCount} onDecrease={onDecrease} onIncrease={onIncrease} />
+        </Tooltip>
       )}
     </Container>
   );
 }
+
+export default React.memo(MenuItem);
 
 const Container = styled.li`
   display: flex;
@@ -45,17 +64,18 @@ const Container = styled.li`
   padding: 10px 0;
 `;
 
-const CheckboxWrapper = styled.div`
+const CheckboxWrapper = styled.label`
   position: relative;
   display: flex;
   align-items: center;
   flex: 1;
 `;
 
-const Label = styled.label`
+const Label = styled.p`
   display: flex;
   flex-direction: column;
   padding: 0 10px;
+  flex: 1;
 `;
 
 const Price = styled.span`
@@ -76,21 +96,5 @@ const Price = styled.span`
     border-radius: 4px;
     background-color: #69dadb;
     content: '';
-  }
-`;
-
-const TooltipButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  border-radius: 15px;
-  background-color: #f5f5f5;
-  text-align: center;
-  color: #999;
-
-  span {
-    margin: 0 3px;
-    line-height: 1.5;
   }
 `;

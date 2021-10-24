@@ -1,17 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IoIosArrowDown } from 'react-icons/io';
 
 import { Span } from '../../atoms';
+import { Tooltip, Counter } from '../index';
 
 interface CartMenuItemProps {
   item: Item;
+  modifyCount: (id: string, count: number) => void;
+  remove: (id: string) => void;
 }
 
-export function CartMenuItem({ item }: CartMenuItemProps) {
-  const { name, count, price } = item;
+function CartMenuItem({ item, modifyCount, remove }: CartMenuItemProps) {
+  const { name, count, price, id } = item;
   const totalPrice = price * count;
   const localPrice = totalPrice.toLocaleString();
+
+  const [localCount, setLocalCount] = useState(count);
+  const onIncrease = () => {
+    if (localCount >= 100) return;
+    setLocalCount((prev) => prev + 1);
+  };
+  const onDecrease = () => {
+    if (localCount <= 1) return;
+    setLocalCount((prev) => prev - 1);
+  };
+
+  const confirmCallback = () => modifyCount(id, localCount);
+  const cancelCallback = () => remove(id);
 
   return (
     <Container>
@@ -23,13 +38,14 @@ export function CartMenuItem({ item }: CartMenuItemProps) {
           {`${localPrice}원`}
         </Span>
       </LabelWrapper>
-      <TooltipButton>
-        <span>{count}</span>
-        <IoIosArrowDown />
-      </TooltipButton>
+      <Tooltip title={name} buttonLabel={count} confirmCallback={confirmCallback} cancelCallback={cancelCallback}>
+        <Counter count={localCount} onDecrease={onDecrease} onIncrease={onIncrease} />
+      </Tooltip>
     </Container>
   );
 }
+
+export default React.memo(CartMenuItem);
 
 const Container = styled.li`
   display: flex;
@@ -41,20 +57,4 @@ const Container = styled.li`
 const LabelWrapper = styled.p`
   display: flex;
   flex-direction: column;
-`;
-
-const TooltipButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  border-radius: 15px;
-  background-color: #f5f5f5;
-  text-align: center;
-  color: #999;
-
-  span {
-    margin: 0 3px;
-    line-height: 1.5;
-  }
 `;

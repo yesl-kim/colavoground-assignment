@@ -4,12 +4,13 @@ import { BsCheckSquareFill, BsSquare } from 'react-icons/bs';
 
 interface CheckboxProps {
   checked: boolean;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export function Checkbox({ checked }: CheckboxProps) {
+export function Checkbox({ checked, onChange }: CheckboxProps) {
   return (
     <>
-      <Input type="checkbox" checked={checked} />
+      <Input type="checkbox" checked={checked} onChange={onChange} />
       {checked ? <BsCheckSquareFill color="royalblue" size={15} /> : <BsSquare color="#bbb" size={15} />}
     </>
   );

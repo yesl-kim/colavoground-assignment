@@ -17,20 +17,20 @@ export type ItemsState = Item[];
 const initialState: ItemsState = [];
 
 // action
-const SELECT_ITEM = 'items/SELECT_ITEM';
+const SELECT_ITEMS = 'items/SELECT_ITEMS';
 const REMOVE_ITEM = 'items/REMOVE_ITEM';
 const MODIFY_ITEM_COUNT = 'items/MODIFY_ITEM_COUNT';
 
-export const selectItem = createAction(SELECT_ITEM)<Item>();
+export const selectItems = createAction(SELECT_ITEMS)<Item[]>();
 export const removeItem = createAction(REMOVE_ITEM)<string>();
 export const modifyItemCount = createAction(MODIFY_ITEM_COUNT)<Count>();
 
-const actions = { selectItem, removeItem, modifyItemCount };
+const actions = { selectItems, removeItem, modifyItemCount };
 type ItemsAction = ActionType<typeof actions>;
 
 // reducer
 const items = createReducer<ItemsState, ItemsAction>(initialState, {
-  [SELECT_ITEM]: (state, action) => state.concat(action.payload),
+  [SELECT_ITEMS]: (state, action) => action.payload,
   [REMOVE_ITEM]: (state, { payload: id }) => state.filter((item) => item.id !== id),
   [MODIFY_ITEM_COUNT]: (state, { payload }) =>
     state.map((item) => (item.id === payload.id ? { ...item, count: payload.count } : item)),
