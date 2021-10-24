@@ -13,4 +13,4 @@ type Discount = {
   rate: number;
 };
 
-type Discounts = Discount[] | [];
+type Discounts = Discount[];

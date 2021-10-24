@@ -5,38 +5,48 @@ import { Span, Checkbox } from '../../atoms';
 
 interface DiscountItemProps {
   discount: Discount;
+  selected: boolean;
+  toggle: (discount: Discount) => void;
 }
 
-export function DiscountItem({ discount }: DiscountItemProps) {
+function DiscountItem({ discount, selected, toggle }: DiscountItemProps) {
   const { name, rate } = discount;
 
-  const [checked, setChecked] = useState(false);
-  const onClick = () => {
-    setChecked(!checked);
-  };
+  const onChange = () => toggle(discount);
 
   return (
-    <Container onClick={onClick}>
-      <Checkbox checked={checked} onChange={onClick} />
-      <Label>
-        <Span color="black" size={15}>
-          {name}
-        </Span>
-        <Span color="point" size={14}>{`${Math.round(rate * 100)}%`}</Span>
-      </Label>
+    <Container>
+      <CheckboxWrapper>
+        <Checkbox checked={selected} onChange={onChange} />
+        <Label>
+          <Span color="black" size={15}>
+            {name}
+          </Span>
+          <Span color="point" size={14}>{`${Math.round(rate * 100)}%`}</Span>
+        </Label>
+      </CheckboxWrapper>
     </Container>
   );
 }
 
+export default React.memo(DiscountItem);
+
 const Container = styled.li`
-  position: relative;
   display: flex;
   align-items: center;
   padding: 10px 0;
 `;
 
-const Label = styled.label`
+const CheckboxWrapper = styled.label`
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+`;
+
+const Label = styled.p`
   display: flex;
   flex-direction: column;
   padding: 0 10px;
+  flex: 1;
 `;

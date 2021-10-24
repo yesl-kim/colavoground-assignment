@@ -11,6 +11,7 @@ import { MenuModal, DiscountModal } from '../components/organisms';
 
 export function Cart() {
   const selectedItems = useSelector((state: RootState) => state.items);
+  const selectedDiscounts = useSelector((state: RootState) => state.discounts);
 
   const dispatch = useDispatch();
   const onToggleMenuModal = () => dispatch(toggleMenuModal());
@@ -39,6 +40,9 @@ export function Cart() {
           <ul style={{ padding: '5px 0' }}>
             {selectedItems.map((item) => (
               <CartMenuItem key={item.id} item={item} modifyCount={onModifyItemCount} remove={onRemoveItem} />
+            ))}
+            {selectedDiscounts.map((discount) => (
+              <CartDiscountItem key={discount.id} discount={discount} />
             ))}
           </ul>
         </Section>
