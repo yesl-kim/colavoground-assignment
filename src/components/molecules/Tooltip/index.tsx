@@ -51,7 +51,7 @@ function Tooltip({
     setIsOpened((prev) => !prev);
   }, []);
 
-  const confirm: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const confirm: React.MouseEventHandler<HTMLButtonElement> = () => {
     if (confirmCallback) confirmCallback();
     setIsOpened(false);
   };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Span } from '../../atoms';
@@ -27,6 +27,11 @@ function CartMenuItem({ item, modifyCount, remove }: CartMenuItemProps) {
 
   const confirmCallback = () => modifyCount(id, localCount);
   const cancelCallback = () => remove(id);
+
+  useEffect(() => {
+    if (count === localCount) return;
+    setLocalCount(count);
+  }, []);
 
   return (
     <Container>

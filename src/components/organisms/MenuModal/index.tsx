@@ -39,7 +39,10 @@ function useItems(): Item[] {
       const data = await fetch(API.CART);
       const dataJson = await data.json();
       const itemsObj = dataJson.items;
-      const totalItems: Item[] = Object.keys(itemsObj).reduce((item, id) => item.concat({ ...itemsObj[id], id }), []);
+      const totalItems: Item[] = Object.keys(itemsObj).reduce(
+        (item, id) => item.concat({ ...itemsObj[id], id, count: 0 }),
+        [],
+      );
       setItems(totalItems);
     }
     getItems();

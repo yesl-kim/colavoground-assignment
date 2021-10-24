@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IoIosArrowDown } from 'react-icons/io';
 
 import { Span, Checkbox } from '../../atoms';
 import { Tooltip, Counter } from '../index';
 
 interface MenuItemProps {
   item: Item;
-  selected: boolean;
-  select: (item: Item) => void;
+  select: (id: string) => void;
   remove: (id: string) => void;
-  modify: (id: string, count: number) => void;
+  modifyCount: (id: string, count: number) => void;
 }
 
-function MenuItem({ item, selected, select, remove, modify }: MenuItemProps) {
+function MenuItem({ item, select, remove, modifyCount }: MenuItemProps) {
   const { name, count, price, id } = item;
   const localPrice = price.toLocaleString();
+  const selected = count > 0;
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = () => {
     if (selected) remove(id);
-    else select(item);
+    else select(id);
   };
 
   const [localCount, setLocalCount] = useState(count);
@@ -32,8 +31,8 @@ function MenuItem({ item, selected, select, remove, modify }: MenuItemProps) {
     setLocalCount((prev) => prev - 1);
   };
 
-  const confirmCallback = () => {};
-  const cancelCallback = () => {};
+  const confirmCallback = () => modifyCount(id, localCount);
+  const cancelCallback = () => remove(id);
 
   return (
     <Container>

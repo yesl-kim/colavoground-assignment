@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { MenuItem } from '../index';
@@ -10,40 +10,45 @@ interface MenuListProps {
 }
 
 export function MenuList({ items, selectedItems, save }: MenuListProps) {
-  const [localSelectedItems, setLocalSelectedItems] = useState(selectedItems);
+  const [localItems, setLocalItems] = useState(items);
 
-  const selectItem = useCallback((item: Item) => setLocalSelectedItems((prev) => prev.concat(item)), []);
-  const removeItem = useCallback(
-    (id: string) => setLocalSelectedItems((prev) => prev.filter((item) => item.id !== id)),
-    [],
-  );
-  const modifyItemCount = useCallback((id: string, count: number) => {
-    const newItem = localSelectedItems.map((item) => (item.id === id ? { ...item, count } : item));
-    setLocalSelectedItems(newItem);
+  useEffect(() => {
+    const userItems = items.map((item) => {
+      const selectedIdx = selectedItems.findIndex((selectedItem) => selectedItem.id === item.id);
+      return selectedIdx === -1 ? item : selectedItems[selectedIdx];
+    });
+    setLocalItems(userItems);
   }, []);
 
-  const list = items.map((item) => {
-    const selected = localSelectedItems.findIndex(({ id }) => id === item.id) !== -1;
-    return (
-      <MenuItem
-        key={item.id}
-        item={item}
-        selected={selected}
-        select={selectItem}
-        remove={removeItem}
-        modify={modifyItemCount}
-      />
-    );
-  });
+  const selectItem = useCallback((id: string) => {
+    setLocalItems((items) => items.map((item) => (item.id === id ? { ...item, count: 1 } : item)));
+  }, []);
+
+  const removeItem = useCallback((id: string) => {
+    setLocalItems((items) => items.map((item) => (item.id === id ? { ...item, count: 0 } : item)));
+  }, []);
+
+  const modifyItemCount = useCallback((id: string, count: number) => {
+    setLocalItems((items) => items.map((item) => (item.id === id ? { ...item, count } : item)));
+  }, []);
+
+  const complete = () => {
+    const selectedItems = localItems.filter((item) => item.count > 0);
+    save(selectedItems);
+  };
 
   return (
     <>
       <Content>
-        <ul>{list}</ul>
+        <ul>
+          {localItems.map((item) => (
+            <MenuItem key={item.id} item={item} select={selectItem} remove={removeItem} modifyCount={modifyItemCount} />
+          ))}
+        </ul>
       </Content>
       <Bottom>
         <Paragraph>서비스를 선택하세요 (여러 개 선택가능)</Paragraph>
-        <NextButton onClick={() => save(localSelectedItems)}>완료</NextButton>
+        <NextButton onClick={complete}>완료</NextButton>
       </Bottom>
     </>
   );
