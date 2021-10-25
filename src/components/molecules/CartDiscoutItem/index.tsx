@@ -16,7 +16,9 @@ export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscou
   const [notDiscoutedIds, setNotDiscountedIds] = useState<string[]>([]);
   const [localCheck, setLocalCheck] = useState<string[]>([]);
 
-  const discountedItems = selectedItems.filter(({id}) => !notDiscoutedIds.includes(id)).map(({ name, count }) => (count > 1 ? `${name}x${count}` : name)).join(', ');
+  const discountedItems = selectedItems.filter(({ id }) => !notDiscoutedIds.includes(id));
+  const labelForDiscoutedItems = discountedItems.map(({ name, count }) => (count > 1 ? `${name}x${count}` : name)).join(', ');
+  const discountedValue = rate * (discountedItems.reduce((totalPrice, {count, price}) => totalPrice + (count * price), 0))
 
   const toggleDiscount:React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const {name: id} = e.target;
@@ -39,10 +41,10 @@ export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscou
           {name}
         </Span>
         <Span color="lightGray" size={13}>
-          {discountedItems}
+          {labelForDiscoutedItems}
         </Span>
         <Span color="point" size={14} bold>
-          {`-원 (${Math.round(rate * 100)}%)`}
+          {`-${discountedValue}원 (${Math.round(rate * 100)}%)`}
         </Span>
       </Paragraph>
       <Tooltip
