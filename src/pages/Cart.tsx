@@ -5,6 +5,7 @@ import { HiPlusCircle } from 'react-icons/hi';
 
 import { toggleMenuModal, toggleDiscountModal } from '../store/modals';
 import { modifyItemCount, removeItem } from '../store/items';
+import { removeDiscount } from '../store/discounts';
 import { RootState } from '../store';
 import { CartMenuItem, CartDiscountItem, ModalTitle } from '../components/molecules';
 import { MenuModal, DiscountModal } from '../components/organisms';
@@ -20,6 +21,7 @@ export function Cart() {
   const onModifyItemCount = (id: string, count: number) => dispatch(modifyItemCount({ id, count }));
 
   const onRemoveItem = (id: string) => dispatch(removeItem(id));
+  const onRemoveDiscount = (id: string) => dispatch(removeDiscount(id));
 
   return (
     <>
@@ -42,7 +44,7 @@ export function Cart() {
               <CartMenuItem key={item.id} item={item} modifyCount={onModifyItemCount} remove={onRemoveItem} />
             ))}
             {selectedDiscounts.map((discount) => (
-              <CartDiscountItem key={discount.id} discount={discount} selectedItems={selectedItems} />
+              <CartDiscountItem key={discount.id} discount={discount} selectedItems={selectedItems} remove={onRemoveDiscount} />
             ))}
           </ul>
         </Section>

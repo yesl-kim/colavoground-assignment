@@ -8,16 +8,28 @@ import { Tooltip } from '../index';
 interface CartDiscountItemProps {
   discount: Discount;
   selectedItems: Item[];
+  remove: (id: string) => void;
 }
 
-export function CartDiscountItem({ discount, selectedItems }: CartDiscountItemProps) {
-  const { name, rate } = discount;
+export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscountItemProps) {
+  const { name, rate, id } = discount;
+  const [notDiscoutedIds, setNotDiscountedIds] = useState<string[]>([]);
+  const [localCheck, setLocalCheck] = useState<string[]>([]);
+
+  const discountedItems = selectedItems.filter(({id}) => !notDiscoutedIds.includes(id)).map(({ name, count }) => (count > 1 ? `${name}x${count}` : name)).join(', ');
+
+  const toggleDiscount:React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const {name: id} = e.target;
+    if(localCheck.includes(id)) setLocalCheck(local => local.filter(localId => localId !== id));
+    else setLocalCheck(local => local.concat(id))
+  }
 
   const confirmCallback = () => {
-    console.log('');
+    setNotDiscountedIds(localCheck);
   };
   const cancelCallback = () => {
-    console.log('d');
+    setNotDiscountedIds(ids => ids.concat(id));
+    remove(id);
   };
 
   return (
@@ -27,7 +39,7 @@ export function CartDiscountItem({ discount, selectedItems }: CartDiscountItemPr
           {name}
         </Span>
         <Span color="lightGray" size={13}>
-          {selectedItems.map(({ name, count }) => (count > 1 ? `${name}x${count}` : name)).join(', ')}
+          {discountedItems}
         </Span>
         <Span color="point" size={14} bold>
           {`-원 (${Math.round(rate * 100)}%)`}
@@ -41,18 +53,20 @@ export function CartDiscountItem({ discount, selectedItems }: CartDiscountItemPr
         cancelCallback={cancelCallback}
       >
         <DiscountedList>
-          {selectedItems.map((item) => (
+          {selectedItems.map((item) => {
+            const checked = !localCheck.includes(item.id)
+            return (
             <DiscountedItem key={item.id}>
               <CheckboxWrapper>
                 <Label>
                   <Span color="gray" size={14}>{`${item.name}x${item.count}`}</Span>
                   <Span size={14} bold>{`${item.price}원`}</Span>
                 </Label>
-                <Input type="checkbox" />
-                <BsCheckLg size={16} color="#7027A0" />
+                <Input type="checkbox" checked={checked} name={item.id} onChange={toggleDiscount} />
+                {checked && <BsCheckLg size={16} color="#7027A0" />}
               </CheckboxWrapper>
             </DiscountedItem>
-          ))}
+          )})}
         </DiscountedList>
       </Tooltip>
     </Container>
