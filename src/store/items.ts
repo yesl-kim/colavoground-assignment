@@ -10,6 +10,7 @@ type Item = {
   name: string;
   count: number;
   price: number;
+  rate?: number;
 };
 
 export type ItemsState = Item[];

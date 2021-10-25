@@ -5,13 +5,15 @@ import { IoClose } from 'react-icons/io5';
 
 interface ModalProps {
   visible: boolean;
+  header: React.ReactNode;
   children: React.ReactNode;
-  onClose: () => void;
+  onClose: React.MouseEventHandler<HTMLButtonElement>;
+  onConfirm: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const el: Element = document.querySelector('#modal')!;
 
-export function Modal({ visible, children, onClose }: ModalProps) {
+export function Modal({ visible, header, children, onClose, onConfirm }: ModalProps) {
   const [animate, setAnimate] = useState(false);
   const [localVisible, setLocalVisible] = useState(visible);
 
@@ -28,10 +30,15 @@ export function Modal({ visible, children, onClose }: ModalProps) {
   return createPortal(
     <Dimmer disappear={!visible}>
       <Container disappear={!visible}>
+        <Header>{header}</Header>
+        <Content>{children}</Content>
+        <Footer>
+          <Paragraph>서비스를 선택하세요 (여러 개 선택가능)</Paragraph>
+          <ConfirmButton onClick={onConfirm}>다음</ConfirmButton>
+        </Footer>
         <CloseButton onClick={onClose}>
           <IoClose color="#666" size={25} />
         </CloseButton>
-        {children}
       </Container>
     </Dimmer>,
     el,
@@ -119,20 +126,19 @@ const Container = styled.section<{ disappear: boolean }>`
     `}
 `;
 
-const Top = styled.header`
+const Header = styled.header`
   padding: 10px 20px 20px;
   text-align: center;
 `;
 
 const Content = styled.div`
   flex: 1;
-  padding: 0 15px 30px;
   overflow: scroll;
 `;
 
-const Bottom = styled.div`
+const Footer = styled.footer`
   margin-top: auto;
-  padding: 0 20px 30px;
+  padding: 15px 20px 30px;
   border-top: 1px solid #eee;
 `;
 
@@ -140,4 +146,20 @@ const CloseButton = styled.button`
   position: absolute;
   left: 12px;
   top: 12px;
+`;
+
+const ConfirmButton = styled.button`
+  padding: 15px 0;
+  width: 100%;
+  border-radius: 12px;
+  background-color: royalblue;
+  font-size: 15px;
+  color: white;
+  text-align: center;
+`;
+
+const Paragraph = styled.p`
+  margin-bottom: 15px;
+  font-size: 12px;
+  color: ${({ theme }) => theme.palette.lightGray};
 `;

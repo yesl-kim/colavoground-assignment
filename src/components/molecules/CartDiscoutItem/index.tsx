@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { BsCheckLg } from 'react-icons/bs';
 
@@ -13,24 +13,31 @@ interface CartDiscountItemProps {
 
 export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscountItemProps) {
   const { name, rate, id } = discount;
-  const [notDiscoutedIds, setNotDiscountedIds] = useState<string[]>([]);
+  const [notDiscoutedItemIds, setNotDiscountedItemIds] = useState<string[]>([]);
+
+  const discountedItems = useMemo(
+    () => selectedItems.filter(({ id }) => !notDiscoutedItemIds.includes(id)),
+    [selectedItems, notDiscoutedItemIds],
+  );
+  const labelForDiscoutedItems = discountedItems
+    .map(({ name, count }) => (count > 1 ? `${name}x${count}` : name))
+    .join(', ');
+  const discountedValue =
+    rate * discountedItems.reduce((totalPrice, { count, price }) => totalPrice + count * price, 0);
+
   const [localCheck, setLocalCheck] = useState<string[]>([]);
-
-  const discountedItems = selectedItems.filter(({ id }) => !notDiscoutedIds.includes(id));
-  const labelForDiscoutedItems = discountedItems.map(({ name, count }) => (count > 1 ? `${name}x${count}` : name)).join(', ');
-  const discountedValue = rate * (discountedItems.reduce((totalPrice, {count, price}) => totalPrice + (count * price), 0))
-
-  const toggleDiscount:React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const {name: id} = e.target;
-    if(localCheck.includes(id)) setLocalCheck(local => local.filter(localId => localId !== id));
-    else setLocalCheck(local => local.concat(id))
-  }
+  const toggleDiscount: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const { name: id } = e.target;
+    if (localCheck.includes(id))
+      setLocalCheck((local) => local.filter((localId) => localId !== id));
+    else setLocalCheck((local) => local.concat(id));
+  };
 
   const confirmCallback = () => {
-    setNotDiscountedIds(localCheck);
+    setNotDiscountedItemIds(localCheck);
   };
   const cancelCallback = () => {
-    setNotDiscountedIds(ids => ids.concat(id));
+    setNotDiscountedItemIds((ids) => ids.concat(id));
     remove(id);
   };
 
@@ -56,19 +63,25 @@ export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscou
       >
         <DiscountedList>
           {selectedItems.map((item) => {
-            const checked = !localCheck.includes(item.id)
+            const checked = !localCheck.includes(item.id);
             return (
-            <DiscountedItem key={item.id}>
-              <CheckboxWrapper>
-                <Label>
-                  <Span color="gray" size={14}>{`${item.name}x${item.count}`}</Span>
-                  <Span size={14} bold>{`${item.price}원`}</Span>
-                </Label>
-                <Input type="checkbox" checked={checked} name={item.id} onChange={toggleDiscount} />
-                {checked && <BsCheckLg size={16} color="#7027A0" />}
-              </CheckboxWrapper>
-            </DiscountedItem>
-          )})}
+              <DiscountedItem key={item.id}>
+                <CheckboxWrapper>
+                  <Label>
+                    <Span color="gray" size={14}>{`${item.name}x${item.count}`}</Span>
+                    <Span size={14} bold>{`${item.price}원`}</Span>
+                  </Label>
+                  <Input
+                    type="checkbox"
+                    checked={checked}
+                    name={item.id}
+                    onChange={toggleDiscount}
+                  />
+                  {checked && <BsCheckLg size={16} color="#7027A0" />}
+                </CheckboxWrapper>
+              </DiscountedItem>
+            );
+          })}
         </DiscountedList>
       </Tooltip>
     </Container>

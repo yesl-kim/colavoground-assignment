@@ -21,7 +21,7 @@ function MenuItem({ item, select, remove, modifyCount }: MenuItemProps) {
     else select(id);
   };
 
-  const [localCount, setLocalCount] = useState(count);
+  const [localCount, setLocalCount] = useState(count < 1 ? 1 : count);
   const onIncrease = () => {
     if (localCount >= 100) return;
     setLocalCount((prev) => prev + 1);
@@ -46,7 +46,12 @@ function MenuItem({ item, select, remove, modifyCount }: MenuItemProps) {
         </Label>
       </CheckboxWrapper>
       {selected && (
-        <Tooltip title="총수" buttonLabel={count} confirmCallback={confirmCallback} cancelCallback={cancelCallback}>
+        <Tooltip
+          title="총수"
+          buttonLabel={count}
+          confirmCallback={confirmCallback}
+          cancelCallback={cancelCallback}
+        >
           <Counter count={localCount} onDecrease={onDecrease} onIncrease={onIncrease} />
         </Tooltip>
       )}

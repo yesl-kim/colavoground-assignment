@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Span } from '../../atoms';
@@ -12,8 +12,9 @@ interface CartMenuItemProps {
 
 function CartMenuItem({ item, modifyCount, remove }: CartMenuItemProps) {
   const { name, count, price, id } = item;
-  const totalPrice = price * count;
-  const localPrice = totalPrice.toLocaleString();
+
+  const totalPrice = useMemo(() => price * count, [price, count]);
+  const localPrice = useMemo(() => totalPrice.toLocaleString(), [totalPrice]);
 
   const [localCount, setLocalCount] = useState(count);
   const onIncrease = () => {
@@ -43,7 +44,12 @@ function CartMenuItem({ item, modifyCount, remove }: CartMenuItemProps) {
           {`${localPrice}원`}
         </Span>
       </LabelWrapper>
-      <Tooltip title={name} buttonLabel={count} confirmCallback={confirmCallback} cancelCallback={cancelCallback}>
+      <Tooltip
+        title={name}
+        buttonLabel={count}
+        confirmCallback={confirmCallback}
+        cancelCallback={cancelCallback}
+      >
         <Counter count={localCount} onDecrease={onDecrease} onIncrease={onIncrease} />
       </Tooltip>
     </Container>
