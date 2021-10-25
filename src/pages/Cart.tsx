@@ -42,7 +42,7 @@ export function Cart() {
               <CartMenuItem key={item.id} item={item} modifyCount={onModifyItemCount} remove={onRemoveItem} />
             ))}
             {selectedDiscounts.map((discount) => (
-              <CartDiscountItem key={discount.id} discount={discount} />
+              <CartDiscountItem key={discount.id} discount={discount} selectedItems={selectedItems} />
             ))}
           </ul>
         </Section>

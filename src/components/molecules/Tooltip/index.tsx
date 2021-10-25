@@ -7,6 +7,7 @@ import { Span } from '../../atoms';
 interface TooltipProps {
   title: string;
   buttonLabel: string | number;
+  size?: 'regular' | 'big';
   deleteText?: string;
   confirmText?: string;
   children: React.ReactNode;
@@ -17,6 +18,7 @@ interface TooltipProps {
 const defaultProps = {
   deleteText: '삭제',
   confirmText: '완료',
+  size: 'regular',
 };
 
 type Direction = 'top' | 'bottom';
@@ -34,6 +36,7 @@ const tooltipBoxSizes = {
 function Tooltip({
   title,
   buttonLabel,
+  size,
   deleteText,
   confirmText,
   children,
@@ -70,7 +73,7 @@ function Tooltip({
         <IoIosArrowDown color="#999" />
       </TooltipButton>
       {isOpened && (
-        <TooltipBox direction={direction}>
+        <TooltipBox direction={direction} size={size}>
           <Title>{title}</Title>
           <Content>{children}</Content>
           <ButtonWrapper>
