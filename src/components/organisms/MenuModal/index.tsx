@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -11,35 +11,50 @@ import { API } from '../../../config';
 
 export function MenuModal() {
   const dispatch = useDispatch();
-  const items = useItems();
+  const [totalItems, setTotalItems] = useState<Item[]>([]);
   const selectedItems = useSelector((state: RootState) => state.items);
+
+  const [items, setItems] = useState<Item[]>([]);
 
   const visible = useSelector((state: RootState) => state.modals.menu);
   const onToggleMenu = () => dispatch(toggleMenuModal());
 
-  const [localItems, setLocalItems] = useState(items);
   useEffect(() => {
-    const userItems = items.map((item) => {
-      const selectedIdx = selectedItems.findIndex((selectedItem) => selectedItem.id === item.id);
+    async function getItems() {
+      const data = await fetch(API.CART);
+      const dataJson = await data.json();
+      const itemsObj = dataJson.items;
+      const total =  Object.keys(itemsObj).reduce(
+        (item, id) => item.concat({ ...itemsObj[id], id, count: 0 }),
+        [],
+      );
+      setTotalItems(total);
+    }
+    getItems();
+  }, [])
+
+  useEffect(() => {
+    const userItems = totalItems.map((item) => {
+      const selectedIdx = selectedItems.findIndex(({id}) => id === item.id);
       return selectedIdx === -1 ? item : selectedItems[selectedIdx];
     });
-    setLocalItems(userItems);
-  }, []);
+    setItems(userItems);
+  }, [totalItems, selectedItems]);
 
   const selectItem = useCallback((id: string) => {
-    setLocalItems((items) => items.map((item) => (item.id === id ? { ...item, count: 1 } : item)));
+    setItems((items) => items.map((item) => (item.id === id ? { ...item, count: 1 } : item)));
   }, []);
 
   const removeItem = useCallback((id: string) => {
-    setLocalItems((items) => items.map((item) => (item.id === id ? { ...item, count: 0 } : item)));
+    setItems((items) => items.map((item) => (item.id === id ? { ...item, count: 0 } : item)));
   }, []);
 
   const modifyItemCount = useCallback((id: string, count: number) => {
-    setLocalItems((items) => items.map((item) => (item.id === id ? { ...item, count } : item)));
+    setItems((items) => items.map((item) => (item.id === id ? { ...item, count } : item)));
   }, []);
 
   const onConfirm = () => {
-    const selectedItems = localItems.filter((item) => item.count > 0);
+    const selectedItems = items.filter((item) => item.count > 0);
     dispatch(selectItems(selectedItems));
     onToggleMenu();
   };
@@ -53,7 +68,7 @@ export function MenuModal() {
     >
       <Content>
         <ul>
-          {localItems.map((item) => (
+          {items.map((item) => (
             <MenuItem
               key={item.id}
               item={item}
@@ -66,25 +81,6 @@ export function MenuModal() {
       </Content>
     </Modal>
   );
-}
-
-function useItems(): Item[] {
-  const [items, setItems] = useState<Item[]>([]);
-  useEffect(() => {
-    async function getItems() {
-      const data = await fetch(API.CART);
-      const dataJson = await data.json();
-      const itemsObj = dataJson.items;
-      const totalItems: Item[] = Object.keys(itemsObj).reduce(
-        (item, id) => item.concat({ ...itemsObj[id], id, count: 0 }),
-        [],
-      );
-      setItems(totalItems);
-    }
-    getItems();
-  }, []);
-
-  return items;
 }
 
 const Content = styled.div`
