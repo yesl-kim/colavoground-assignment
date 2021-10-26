@@ -9,9 +9,10 @@ interface CartDiscountItemProps {
   discount: Discount;
   selectedItems: Item[];
   remove: (id: string) => void;
+  applyDiscount: (value: number) => void;
 }
 
-export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscountItemProps) {
+export function CartDiscountItem({ discount, selectedItems, remove, applyDiscount }: CartDiscountItemProps) {
   const { name, rate, id } = discount;
   const [notDiscoutedItemIds, setNotDiscountedItemIds] = useState<string[]>([]);
 
@@ -23,7 +24,7 @@ export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscou
     .map(({ name, count }) => (count > 1 ? `${name}x${count}` : name))
     .join(', ');
   const discountedValue =
-    rate * discountedItems.reduce((totalPrice, { count, price }) => totalPrice + count * price, 0);
+    -(rate * discountedItems.reduce((totalPrice, { count, price }) => totalPrice + count * price, 0));
 
   const [localCheck, setLocalCheck] = useState<string[]>([]);
   const toggleDiscount: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -35,6 +36,7 @@ export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscou
 
   const confirmCallback = () => {
     setNotDiscountedItemIds(localCheck);
+    applyDiscount(discountedValue)
   };
   const cancelCallback = () => {
     setNotDiscountedItemIds((ids) => ids.concat(id));
@@ -51,7 +53,7 @@ export function CartDiscountItem({ discount, selectedItems, remove }: CartDiscou
           {labelForDiscoutedItems}
         </Span>
         <Span color="point" size={14} bold>
-          {`-${discountedValue}원 (${Math.round(rate * 100)}%)`}
+          {`${discountedValue}원 (${Math.round(rate * 100)}%)`}
         </Span>
       </Paragraph>
       <Tooltip

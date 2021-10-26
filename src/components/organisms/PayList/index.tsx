@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { HiPlusCircle } from 'react-icons/hi';
@@ -22,6 +22,12 @@ export function PayList() {
   const onRemoveItem = (id: string) => dispatch(removeItem(id));
   const onRemoveDiscount = (id: string) => dispatch(removeDiscount(id));
 
+  const [totalPrice, setTotalPrice] = useState(0);
+  const applyDiscount = (discountedValue: number) => setTotalPrice(total => total + discountedValue);
+  useEffect(() => {
+    setTotalPrice(selectedItems.reduce((total, { price, count }) => total + (price * count), 0))
+  }, [selectedItems])
+
   return (
     <>
       <Section>
@@ -44,6 +50,7 @@ export function PayList() {
               discount={discount}
               selectedItems={selectedItems}
               remove={onRemoveDiscount}
+              applyDiscount={applyDiscount}
             />
           ))}
         </List>
@@ -55,7 +62,7 @@ export function PayList() {
             합계
           </Span>
           <Span color="black" size={24} bold>
-            0원
+            {`${totalPrice.toLocaleString()}원`}
           </Span>
         </ValueWrapper>
         <NextButton>다음</NextButton>

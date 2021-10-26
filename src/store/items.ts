@@ -10,7 +10,6 @@ type Item = {
   name: string;
   count: number;
   price: number;
-  rate?: number;
 };
 
 export type ItemsState = Item[];
@@ -21,6 +20,7 @@ const initialState: ItemsState = [];
 const SELECT_ITEMS = 'items/SELECT_ITEMS';
 const REMOVE_ITEM = 'items/REMOVE_ITEM';
 const MODIFY_ITEM_COUNT = 'items/MODIFY_ITEM_COUNT';
+const MODIFY_RATE_OF_DISCOUNT = 'items/MODIFY_RATE_OF_DISCOUNT';
 
 export const selectItems = createAction(SELECT_ITEMS)<Item[]>();
 export const removeItem = createAction(REMOVE_ITEM)<string>();
@@ -34,7 +34,7 @@ const items = createReducer<ItemsState, ItemsAction>(initialState, {
   [SELECT_ITEMS]: (state, action) => action.payload,
   [REMOVE_ITEM]: (state, { payload: id }) => state.filter((item) => item.id !== id),
   [MODIFY_ITEM_COUNT]: (state, { payload }) =>
-    state.map((item) => (item.id === payload.id ? { ...item, count: payload.count } : item)),
+    state.map((item) => (item.id === payload.id ? { ...item, count: payload.count } : item))
 });
 
 export default items;
